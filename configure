@@ -18,7 +18,6 @@ if [ ! -f $stack/.setup-complete ] ; then
 fi
 
 # Arg parsing.
-
 while [ $# -gt 0 ] ; do
     arg="$1"
     shift
@@ -26,6 +25,9 @@ while [ $# -gt 0 ] ; do
     case "$arg" in
         --with-blas=*)
             system_blas_dir=$(echo "$arg" |sed -e s/--with-blas=//)
+            ;;
+        --ignore-system-mpi)
+            ignore_system_mpi=1
             ;;
         -h|--help)
             echo "usage: $0 [--with-blas=BLAS-LIB-DIR]"
@@ -54,6 +56,9 @@ echo "# dedalus-build configuration" >$stack/.configuration
 # mpich installation.
 
 if type mpicc >/dev/null 2>&1 ; then
+    mpicc_exists=1
+fi
+if [ ! -z "$mpicc_exists" ] && [ -z "$ignore_system_mpi" ] ; then
     # mpicc is in $PATH => assume the user has a system MPI they want to use.
     echo "MPI: using system installation"
     echo "  mpicc:" $(which mpicc)
@@ -68,7 +73,11 @@ if type mpicc >/dev/null 2>&1 ; then
 
     echo 'use_system_mpi=1' >>$stack/.configuration
 else
-    echo "MPI: using Anaconda installation (because no \"mpicc\" in \$PATH)"
+    if [ -z "$ignore_system_mpi" ] ; then
+        echo "MPI: using Anaconda installation (because no \"mpicc\" in \$PATH)"
+    else
+        echo "MPI: using Anaconda installation (because --ignore-system-mpi is set)"
+    fi
     echo 'use_system_mpi=0' >>$stack/.configuration
 fi
 

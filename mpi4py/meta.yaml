@@ -40,11 +40,6 @@ requirements:
     - python
     - system-libs
 
-test:
-  imports:
-    - mpi4py
-    - mpi4py.MPI
-
 about:
   home: http://pythonhosted.org/mpi4py/
   license: BSD 2-clause

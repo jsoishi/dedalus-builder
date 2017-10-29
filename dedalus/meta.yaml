@@ -15,8 +15,7 @@ package:
   version: {{ version }}
 
 source:
-  hg_url: https://bitbucket.org/kburns/dedalus # XXX
-  hg_tag: 760173997220 # XXX "cardinal" bookmark; symbolic name doesn't work
+  hg_url: https://bitbucket.org/dedalus-project/dedalus # XXX
   patches:
     - install-tools.patch
 
